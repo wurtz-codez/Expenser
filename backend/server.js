@@ -3,6 +3,10 @@ import dotenv from 'dotenv'
 import cors from 'cors';
 import pkg from 'body-parser'
 import cookieParser from 'cookie-parser'
+import connectDB from './database/db.js';
+
+dotenv.config({}); //this is necessary as it automatically detects the enviroment variable present in the file. 
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
