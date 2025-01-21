@@ -21,7 +21,7 @@ const expenseSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
   },
-}, {timestamps: true})
+}, { timestamps: true })
 
 export const Expense = mongoose.model("Expense", expenseSchema)
 
