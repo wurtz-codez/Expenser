@@ -5,6 +5,7 @@ import pkg from 'body-parser'
 import cookieParser from 'cookie-parser'
 import connectDB from './database/db.js';
 import userRoutes from './routes/user.routes.js'
+import expenseRoutes from './routes/expense.route.js'
 
 dotenv.config({}); //this is necessary as it automatically detects the enviroment variable present in the file. 
 connectDB();
@@ -26,6 +27,7 @@ app.use(cors(corsOptions))
 // API'S
 app.use('/api/v1/user', userRoutes)
 // http://localhost:5173/api/v1/user/register(or login or logout)
+app.use('/api/v1/expense', expenseRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`)
