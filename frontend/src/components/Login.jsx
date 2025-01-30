@@ -3,8 +3,10 @@ import { Label } from './ui/label'
 import { Input } from './ui/input'
 import Logo from './shared/Logo'
 import { Button } from './ui/button'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import axios from 'axios';
+import { toast } from 'sonner'
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -16,9 +18,25 @@ const Login = () => {
     setInput({ ...input, [e.target.name]: e.target.value })
   }
 
-  const submitHandler = (e) => {
+  const navigate = useNavigate();
+
+  const submitHandler = async(e) => {
     e.preventDefault()
-    console.log(input)
+    try {
+      const res = await axios.post('http://localhost:8000/api/v1/user/login', input, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true
+      });
+      console.log(res);
+      if(res.data.success) {
+        toast.success(res.data.message);
+        navigate('/');
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   }
 
   return (

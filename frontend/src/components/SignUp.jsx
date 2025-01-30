@@ -3,26 +3,44 @@ import { Label } from './ui/label'
 import { Input } from './ui/input'
 import Logo from './shared/Logo'
 import { Button } from './ui/button'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import axios from 'axios'
+import { toast } from 'sonner'
 
 function SignUp() {
 
   const [input, setInput] = useState({
-    fullname: '',
+    fullName: '',
     email: '',
     password: ''
   })
 
-  const handleChange = (e) => {
+  const handleChange = async(e) => {
     setInput({ ...input, [e.target.name]: e.target.value })
   }
 
-  const submitHandler = (e) => {
-    e.preventDefault()
-    console.log(input)
-  }
+  const navigate = useNavigate();
 
+  const submitHandler = async(e) => {
+    e.preventDefault()
+    
+    try {
+      const res = await axios.post('http://localhost:8000/api/v1/user/register', input, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true
+      });
+      console.log(res);
+      if(res.data.success) {
+        toast.success(res.data.message);
+        navigate('/login');
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  }
   return (
     <div className='flex items-center justify-center w-screen h-screen'>
 
@@ -37,10 +55,10 @@ function SignUp() {
         <Input
           className='border-white bg-black mb-4'
           type='text'
-          name='fullname'
+          name='fullName'
           placeholder='Enter your full name'
           onChange={handleChange}
-          value={input.fullname} />
+          value={input.fullName} />
 
         <Label>Email</Label>
         <Input
