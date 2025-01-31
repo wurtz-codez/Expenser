@@ -8,6 +8,8 @@ import { Description } from '@radix-ui/react-dialog'
 import axios from 'axios'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setExpenses } from '@/redux/expenseSlice'
 
 
 const CreateExpense = () => {
@@ -20,15 +22,17 @@ const CreateExpense = () => {
 
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
+  const expenses = useSelector(store => store.expense.expenses);
 
   const handleEventChange = (e) => {
-    const {name,value} = e.target;
+    const { name, value } = e.target;
     setFormdata((prevData) => ({
       ...prevData,
       [name]: value
     }))
   }
-  
+
   const handleCategoryChange = (value) => {
     setFormdata((prevData) => ({
       ...prevData,
@@ -36,7 +40,7 @@ const CreateExpense = () => {
     }))
   }
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
@@ -47,7 +51,8 @@ const CreateExpense = () => {
         withCredentials: true
       });
 
-      if(res.data.success) {
+      if (res.data.success) {
+        dispatch(setExpenses([...expenses, res.data.expense]));
         toast.success(res.data.message);
         setIsOpen(false);
       }
@@ -55,11 +60,11 @@ const CreateExpense = () => {
       toast.error(error.response.data.message);
     }
   }
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="black" onClick={()=> {
+        <Button variant="black" onClick={() => {
           setIsOpen(true);
         }}>Create Expense</Button>
       </DialogTrigger>

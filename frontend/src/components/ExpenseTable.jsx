@@ -12,14 +12,21 @@ import { useSelector } from "react-redux";
 import { Checkbox } from "./ui/checkbox";
 import { Trash } from "lucide-react";
 import { Button } from "./ui/button";
+import UpdateExpense from "./UpdateExpense";
+import { useState,useEffect } from "react";
 
 const expenseTable = () => {
 
   const {expenses} = useSelector(store => store.expense); 
+  const [localExpenses, setLocalExpenses] = useState([]);
   
   const handleCheckboxChange = (expenseId) => {
 
   }
+
+  useEffect(() => {
+    setLocalExpenses(expenses);
+  }, [expenses]);
   
   return (
     <Table>
@@ -35,7 +42,7 @@ const expenseTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {expenses.map((expense) => (
+        {localExpenses.length ===0 ? <span>Add your first expense</span> : localExpenses?.map((expense) => (
           <TableRow key={expense._id}>
             <TableCell className="font-medium">
               <Checkbox
@@ -48,8 +55,9 @@ const expenseTable = () => {
             <TableCell>{expense.category}</TableCell>
             <TableCell>{expense.createdAt?.split("T")[0]}</TableCell>
             <TableCell className="text-right">
-              <div cclassName="flex items-center justify-end gap-2">
+              <div className="flex items-center justify-end gap-2">
                 <Button size='icon' className='rounded-full border text-red-600 hover:border-transparent' variant='outline'><Trash className="h-4 w-4"/></Button>
+                <UpdateExpense/>
               </div>
             </TableCell>
           </TableRow>
