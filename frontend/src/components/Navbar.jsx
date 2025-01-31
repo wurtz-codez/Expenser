@@ -26,27 +26,28 @@ const Navbar = () => {
   }
   
   return (
-    <div className='border-b-2 border-gray-200 p-2'>
+    <div className='border-b-2 border-gray-200 p-2 w-full fixed top-0 z-10'>
       <div className='flex justify-between items-center max-w-7xl mx-auto h-16'>
-      <Logo />
-      {
-        user ? (<Popover>
-          <PopoverTrigger>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-            </Avatar>
-          </PopoverTrigger>
-          <PopoverContent>
-            <Button onClick={logoutHandler}>Logout</Button>
-          </PopoverContent>
-        </Popover>
-        ) : (
-          <div className='flex gap-2'>
-            <Link to="/login"><Button >Login</Button></Link>
-            <Link to="/signup"><Button>Sign Up</Button></Link>
-          </div>
-        )
-      }
+        <Logo />
+        {
+          user ? (
+            <Popover>
+              <PopoverTrigger>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                </Avatar>
+              </PopoverTrigger>
+              <PopoverContent>
+                <Button onClick={logoutHandler}>Logout</Button>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <div className='flex gap-2'>
+              <Link to="/login"><Button>Login</Button></Link>
+              <Link to="/signup"><Button>Sign Up</Button></Link>
+            </div>
+          )
+        }
       </div>
     </div>
   )
