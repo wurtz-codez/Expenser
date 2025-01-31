@@ -50,7 +50,7 @@ const expenseTable = () => {
                 onCheckedChange = {() => handleCheckboxChange(expense._id)}
               />
             </TableCell>
-            <TableCell>{expense.decription}</TableCell>
+            <TableCell>{expense.description}</TableCell>
             <TableCell>{expense.amount}</TableCell>
             <TableCell>{expense.category}</TableCell>
             <TableCell>{expense.createdAt?.split("T")[0]}</TableCell>
