@@ -8,53 +8,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-]
+import { useSelector } from "react-redux";
+import { Checkbox } from "./ui/checkbox";
+import { Trash } from "lucide-react";
+import { Button } from "./ui/button";
 
 const expenseTable = () => {
+
+  const {expenses} = useSelector(store => store.expense); 
+  
+  const handleCheckboxChange = (expenseId) => {
+
+  }
+  
   return (
     <Table>
       <TableCaption>List of your recent expenses.</TableCaption>
@@ -69,19 +35,30 @@ const expenseTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+        {expenses.map((expense) => (
+          <TableRow key={expense._id}>
+            <TableCell className="font-medium">
+              <Checkbox
+                checked = {expense.done}
+                onCheckedChange = {() => handleCheckboxChange(expense._id)}
+              />
+            </TableCell>
+            <TableCell>{expense.decription}</TableCell>
+            <TableCell>{expense.amount}</TableCell>
+            <TableCell>{expense.category}</TableCell>
+            <TableCell>{expense.createdAt?.split("T")[0]}</TableCell>
+            <TableCell className="text-right">
+              <div cclassName="flex items-center justify-end gap-2">
+                <Button size='icon' className='rounded-full border text-red-600 hover:border-transparent' variant='outline'><Trash className="h-4 w-4"/></Button>
+              </div>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
       <TableFooter>
         <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
+          <TableCell colSpan={5} className='font-bold text-xl'>Total</TableCell>
+          <TableCell className="text-right font-bold text-xl">$2,500.00</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
