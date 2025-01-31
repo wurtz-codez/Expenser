@@ -5,9 +5,13 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { useDispatch } from 'react-redux'
 import { setCategory } from '@/redux/expenseSlice'
 import { setMarkAsDone } from '@/redux/expenseSlice'
+import ExpenseTable from './ExpenseTable'
+import useGetExpense from '@/hooks/useGetExpense'
 
 const Home = () => {
 
+  useGetExpense();
+  
   const dispatch = useDispatch();
   
   const handleCategoryChange = (value) => {
@@ -63,8 +67,11 @@ const Home = () => {
             </Select>
           </div>
         </div>
-
+        
+        <ExpenseTable />
+        
       </div>
+   
     </>
   )
 }

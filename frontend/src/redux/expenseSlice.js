@@ -4,7 +4,8 @@ const expenseSlice = createSlice({
   name: 'expense',
   initialState: {
     category: '',
-    markAsDone: ''
+    markAsDone: '',
+    expenses: []
   },
   reducers : {
     setCategory: (state, action) => {
@@ -12,9 +13,12 @@ const expenseSlice = createSlice({
     },
     setMarkAsDone: (state, action) => {
       state.markAsDone = action.payload;
+    },
+    setExpenses: (state, action) => {
+      state.expenses = action.payload;  
     }
   }
 });
 
-export const { setCategory, setMarkAsDone } = expenseSlice.actions;
+export const { setCategory, setMarkAsDone, setExpenses } = expenseSlice.actions;
 export default expenseSlice.reducer;
