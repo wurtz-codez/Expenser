@@ -33,7 +33,7 @@ export const getAllExpense = async (req, res) => {
   try {
     const userId = req.id // Loggedin user Id 
     const category = req.query.category;
-    const done = req.query.category;
+    const done = req.query.done;
 
     const query = {
       userId // filter by userId

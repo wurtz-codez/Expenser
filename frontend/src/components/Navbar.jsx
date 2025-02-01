@@ -6,10 +6,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
 
-  const user = true;
+  const {user} = useSelector(store => store.auth);
   
   const navigate = useNavigate();
   
