@@ -66,7 +66,10 @@ const UpdateExpense = ({expense}) => {
         setIsOpen(false);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      const errorMessage = error.response?.data?.message || 'An error occurred while updating the expense';
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   }
 
