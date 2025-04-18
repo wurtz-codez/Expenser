@@ -1,134 +1,136 @@
-import React from 'react'
-import Navbar from './Navbar'
-import CreateExpense from './CreateExpense'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select'
-import { useDispatch } from 'react-redux'
-import { setCategory } from '@/redux/expenseSlice'
-import { setMarkAsDone } from '@/redux/expenseSlice'
-import ExpenseTable from './ExpenseTable'
-import useGetExpense from '@/hooks/useGetExpense'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
-import { fadeIn, slideIn, staggerContainer } from '@/lib/animations'
-import { ChartBarIcon, FilterIcon } from '@heroicons/react/24/outline'
+import { FunnelIcon } from '@heroicons/react/24/outline'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import CreateExpense from './CreateExpense'
+import ExpenseTable from './ExpenseTable'
 import { useTheme } from '@/hooks/use-theme'
+import { fadeIn, slideIn } from '@/lib/animations'
 
 const Home = () => {
-  useGetExpense();
-  const dispatch = useDispatch();
-  const { theme } = useTheme();
-  
-  const handleCategoryChange = (value) => {
-    dispatch(setCategory(value));
-  }
+  const { user } = useSelector(store => store.auth)
+  const expenses = useSelector(store => store.expense.expenses)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [sortBy, setSortBy] = useState('date')
+  const [sortOrder, setSortOrder] = useState('desc')
+  const { theme } = useTheme()
 
-  const handleDoneChange = (value) => {
-    dispatch(setMarkAsDone(value));
-  }
+  const filteredExpenses = expenses
+    .filter(expense => 
+      expense.description.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedCategory === 'all' || expense.category === selectedCategory)
+    )
+    .sort((a, b) => {
+      if (sortBy === 'date') {
+        return sortOrder === 'desc' 
+          ? new Date(b.createdAt) - new Date(a.createdAt)
+          : new Date(a.createdAt) - new Date(b.createdAt)
+      } else if (sortBy === 'amount') {
+        return sortOrder === 'desc' 
+          ? b.amount - a.amount
+          : a.amount - b.amount
+      }
+      return 0
+    })
+
+  const categories = ['all', 'rent', 'food', 'education', 'shopping', 'others']
 
   return (
-    <div className={`min-h-screen ${
-      theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
-    } transition-colors duration-200`}>
-      <Navbar />
-      <motion.div 
-        initial="initial"
-        animate="animate"
-        variants={fadeIn}
-        className="container mx-auto px-4 pt-24 pb-8"
-      >
-        <motion.div 
-          variants={staggerContainer}
-          className="grid gap-6"
+    <motion.div
+      initial="initial"
+      animate="animate"
+      variants={fadeIn}
+      className={`min-h-screen pt-20 pb-8 ${
+        theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4">
+        <motion.div
+          variants={slideIn}
+          className={`mb-8 p-6 rounded-lg shadow-md ${
+            theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+          }`}
         >
-          {/* Header Section */}
-          <motion.div 
-            variants={slideIn}
-            className={`flex flex-col md:flex-row justify-between items-center gap-4 p-6 rounded-lg shadow-sm ${
-              theme === 'dark' 
-                ? 'bg-gray-800 text-white' 
-                : 'bg-white text-gray-800'
-            } transition-colors duration-200`}
-          >
-            <div className="flex items-center gap-2">
-              <ChartBarIcon className={`h-8 w-8 ${
-                theme === 'dark' ? 'text-blue-400' : 'text-blue-500'
-              }`} />
-              <h1 className="text-2xl font-bold">Expense Tracker</h1>
-            </div>
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
+            <h1 className={`text-2xl font-bold ${
+              theme === 'dark' ? 'text-white' : 'text-gray-800'
+            }`}>
+              Welcome, {user?.name}!
+            </h1>
             <CreateExpense />
-          </motion.div>
+          </div>
 
-          {/* Filters Section */}
-          <motion.div 
-            variants={slideIn}
-            className={`p-6 rounded-lg shadow-sm ${
-              theme === 'dark' 
-                ? 'bg-gray-800 text-white' 
-                : 'bg-white text-gray-800'
-            } transition-colors duration-200`}
-          >
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-              <div className="flex items-center gap-4 w-full md:w-auto">
-                <FilterIcon className={`h-5 w-5 ${
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                }`} />
-                <h2 className="text-lg font-medium">Filter By:</h2>
-                <Select onValueChange={handleCategoryChange}>
-                  <SelectTrigger className={`w-[200px] ${
-                    theme === 'dark'
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-gray-50 border-gray-200 text-gray-800'
-                  }`}>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent className={theme === 'dark' ? 'bg-gray-800 border-gray-700' : ''}>
-                    <SelectGroup>
-                      <SelectLabel>Categories</SelectLabel>
-                      <SelectItem value="rent">Rent</SelectItem>
-                      <SelectItem value="food">Food</SelectItem>
-                      <SelectItem value="education">Education</SelectItem>
-                      <SelectItem value="shopping">Shopping</SelectItem>
-                      <SelectItem value="others">Others</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex items-center gap-4 w-full md:w-auto">
-                <Select onValueChange={handleDoneChange}>
-                  <SelectTrigger className={`w-[200px] ${
-                    theme === 'dark'
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-gray-50 border-gray-200 text-gray-800'
-                  }`}>
-                    <SelectValue placeholder="Mark As" />
-                  </SelectTrigger>
-                  <SelectContent className={theme === 'dark' ? 'bg-gray-800 border-gray-700' : ''}>
-                    <SelectGroup>
-                      <SelectItem value="done">Done</SelectItem>
-                      <SelectItem value="undone">Undone</SelectItem>
-                      <SelectItem value="both">Both</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Search expenses..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={`w-full ${
+                  theme === 'dark' 
+                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                    : ''
+                }`}
+              />
             </div>
-          </motion.div>
 
-          {/* Table Section */}
-          <motion.div 
-            variants={slideIn}
-            className={`p-6 rounded-lg shadow-sm overflow-hidden ${
-              theme === 'dark' 
-                ? 'bg-gray-800 text-white' 
-                : 'bg-white text-gray-800'
-            } transition-colors duration-200`}
-          >
-            <ExpenseTable />
-          </motion.div>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className={theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : ''}>
+                <SelectValue placeholder="Filter by category" />
+              </SelectTrigger>
+              <SelectContent className={theme === 'dark' ? 'bg-gray-800 border-gray-700' : ''}>
+                {categories.map(category => (
+                  <SelectItem 
+                    key={category} 
+                    value={category}
+                    className={theme === 'dark' ? 'text-white hover:bg-gray-700' : ''}
+                  >
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <div className="flex gap-2">
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className={theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : ''}>
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent className={theme === 'dark' ? 'bg-gray-800 border-gray-700' : ''}>
+                  <SelectItem 
+                    value="date"
+                    className={theme === 'dark' ? 'text-white hover:bg-gray-700' : ''}
+                  >
+                    Date
+                  </SelectItem>
+                  <SelectItem 
+                    value="amount"
+                    className={theme === 'dark' ? 'text-white hover:bg-gray-700' : ''}
+                  >
+                    Amount
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant="outline"
+                onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                className={theme === 'dark' ? 'border-gray-600 text-white hover:bg-gray-700' : ''}
+              >
+                {sortOrder === 'asc' ? '↑' : '↓'}
+              </Button>
+            </div>
+          </div>
+
+          <ExpenseTable expenses={filteredExpenses} />
         </motion.div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   )
 }
 
