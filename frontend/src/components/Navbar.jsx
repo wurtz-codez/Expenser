@@ -9,7 +9,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { fadeIn, slideIn, hoverScale } from '../lib/animations';
+import { fadeIn, slideIn, scaleIn } from '../lib/animations';
 import { ThemeToggle } from './ui/theme-toggle';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -83,8 +83,10 @@ const Navbar = () => {
               </PopoverTrigger>
               <PopoverContent className={theme === 'dark' ? 'bg-gray-800 border-gray-700' : ''}>
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  variants={fadeIn}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   className="p-2"
                 >
                   <Button 
@@ -101,18 +103,24 @@ const Navbar = () => {
               </PopoverContent>
             </Popover>
           ) : (
-            <div className='flex gap-2'>
+            <motion.div
+              variants={slideIn}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="flex gap-2"
+            >
               <Link to="/login">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button variant="outline">Login</Button>
-                </motion.div>
+                <Button variant="ghost" className={theme === 'dark' ? 'text-gray-300 hover:text-white' : ''}>
+                  Login
+                </Button>
               </Link>
-              <Link to="/signup">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button>Sign Up</Button>
-                </motion.div>
+              <Link to="/register">
+                <Button className={theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : ''}>
+                  Register
+                </Button>
               </Link>
-            </div>
+            </motion.div>
           )}
         </div>
 
@@ -120,53 +128,42 @@ const Navbar = () => {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              variants={scaleIn}
+              initial="initial"
+              animate="animate"
+              exit="exit"
               className={`absolute top-16 left-0 right-0 ${
-                theme === 'dark'
-                  ? 'bg-gray-900 border-gray-800'
+                theme === 'dark' 
+                  ? 'bg-gray-900 border-gray-800' 
                   : 'bg-white border-gray-200'
-              } border-b transition-colors duration-200 md:hidden`}
+              } border-b-2 p-4 md:hidden`}
             >
-              <div className="p-4 space-y-4">
-                <div className="flex justify-center">
-                  <ThemeToggle />
-                </div>
+              <div className="flex flex-col gap-4">
+                <ThemeToggle />
                 {user ? (
-                  <motion.div
-                    variants={slideIn}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    className="flex flex-col gap-2"
+                  <Button 
+                    onClick={logoutHandler}
+                    className={`w-full ${
+                      theme === 'dark'
+                        ? 'hover:bg-red-900 hover:text-white'
+                        : 'hover:bg-red-500 hover:text-white'
+                    } transition-colors`}
                   >
-                    <Button 
-                      onClick={logoutHandler}
-                      className={`w-full ${
-                        theme === 'dark'
-                          ? 'hover:bg-red-900 hover:text-white'
-                          : 'hover:bg-red-500 hover:text-white'
-                      } transition-colors`}
-                    >
-                      Logout
-                    </Button>
-                  </motion.div>
+                    Logout
+                  </Button>
                 ) : (
-                  <motion.div
-                    variants={slideIn}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    className="flex flex-col gap-2"
-                  >
+                  <div className="flex flex-col gap-2">
                     <Link to="/login">
-                      <Button variant="outline" className="w-full">Login</Button>
+                      <Button variant="ghost" className={`w-full ${theme === 'dark' ? 'text-gray-300 hover:text-white' : ''}`}>
+                        Login
+                      </Button>
                     </Link>
-                    <Link to="/signup">
-                      <Button className="w-full">Sign Up</Button>
+                    <Link to="/register">
+                      <Button className={`w-full ${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : ''}`}>
+                        Register
+                      </Button>
                     </Link>
-                  </motion.div>
+                  </div>
                 )}
               </div>
             </motion.div>
