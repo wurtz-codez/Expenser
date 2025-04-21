@@ -12,6 +12,9 @@ A full-stack expense tracking application built with React, Redux, Node.js, and 
 - 💾 Persistent data storage with MongoDB
 - 🔒 Secure authentication with JWT
 - 🎨 Modern UI with Tailwind CSS and Shadcn components
+- 📱 Responsive design for mobile devices
+- 📈 Expense analytics and insights
+- 🔔 Email notifications for budget alerts
 
 ## Tech Stack
 
@@ -43,13 +46,31 @@ A full-stack expense tracking application built with React, Redux, Node.js, and 
 ### Installation
 
 1. Clone the repository
-2. install all the dependencies needed for backend and frontend
-2. run the servers in both the folders (backend and frontend)
+2. Install all the dependencies needed for backend and frontend
+3. Set up environment variables:
+   - Create `.env` file in the backend directory
+   - Add the following variables:
+     ```
+     MONGODB_URI=your_mongodb_uri
+     JWT_SECRET=your_jwt_secret
+     PORT=5000
+     ```
+4. Run the servers:
 ```bash
+# Clone the repository
 git clone https://github.com/yourusername/Expenser.git
 
-cd Expenser
-cd backend && npm install
+# Install backend dependencies and start server
+cd Expenser/backend
+npm install
 npm run dev
-cd ../frontend && npm install
+
+# In a new terminal, install frontend dependencies and start server
+cd ../frontend
+npm install
 npm run dev
+```
+
+The application will be available at:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
